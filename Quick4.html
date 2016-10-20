@@ -1,0 +1,302 @@
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+ <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+      <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+</head>
+<style>
+	body {
+		background-color: lightgrey;
+		width: 50%;
+		margin: auto;
+	}
+	h2 {
+		color: green;
+	}
+	svg {
+		margin: auto;
+	}
+	
+</style>	
+<body>
+	<br>
+	<h2><center>Quick Sort simulator</center></h2>
+	<p>Steps in detail:</p>
+	<ol><li>Select a random pivot element</li>
+	<li>Select the first index of the left sub array as the 'low' index</li>
+	<li>Select the last index of the left sub array as the 'high' index</li>
+	<li>For each element in the left sub array, if element[low]&ltpivot, increment low. If not, stop</li>
+	<li>For each element in the right sub array, if element[high]&gtpivot, decrement high. If not, stop</li>
+	</ol>
+	<h3><center>Test your quicksort understanding now!</center></h3>
+	<div>Repeat the above steps for the elements shown below. Once the array is sorted, click the Check Result! button. You will see the number of steps you took to complete. If the number of steps is less than the threshold, i.e (O<sub>4/3</sub>(nlogn)) elements, you will pass.
+	</div>	
+	
+	<script>
+		var margin = {top:20,left:30,bottom:20, right:20}
+		var width=400;
+		var height=400;
+		var demodata= [];
+		var count=0;
+		var pivot=0;
+		//var demodata=[40,32,16,50,33,64,31,28,42,10];
+		
+		while(demodata.length < 10){
+			var randomnumber=Math.ceil(Math.random()*100)
+			var found=false;
+			for(var i=0;i<demodata.length;i++){
+			if(demodata[i]==randomnumber){found=true;break}
+		}
+  if(!found)demodata[demodata.length]=randomnumber;
+}
+		//console.log(demodata);
+		function randomN(){
+			return Math.floor((Math.random() * 50) + 1);
+		}
+
+		var svg=d3.select("body")
+					.append("svg")
+					.attr("width",width)
+					.attr("height",height)
+					.attr("display","block");
+					
+				var rect1 = svg.selectAll("rect")
+				.data(demodata)
+				.enter()
+				.append("rect")
+				.attr("x",function(d,i){
+					return i*(width/demodata.length);
+				})
+				.attr("y",function(d){
+					return (height-d*4);
+				})
+				.attr("width",width/demodata.length-2)
+				
+				.attr("fill",function(d){
+				return "rgb(40,50,80)"
+				})
+				.attr("opacity",0.8)
+				.attr("height",function(d)
+				{return d*4;
+				});
+				
+			svg.selectAll("text")
+				.data(demodata)
+				.enter()
+				.append("text")
+				.text(function(d){ 
+					return d;
+				})
+				.attr("x", function(d, i){
+				return i * (width / demodata.length)+(width/demodata.length - 2)/2;
+				})
+				.attr("y", function(d) {
+				return height - d*4+15;
+				})
+				.attr("fill","white")
+				.attr("text-anchor","middle");
+				rect1.on('click',function(d,i){
+					pivot=i;
+					
+					d3.select(this).attr('fill','orange');
+				});
+		
+				
+				rect1.on('click',function(d,i){
+					d3.select(this).attr('fill','orange');
+					pivot=i;
+					element=d;
+					tutorial();
+					});
+				
+				function tutorial(){
+				var flag = 1;
+				var tempdata = 0;
+				var tempdata1;
+				var flag = 1;
+				var swapcount=0;
+					rect1.on("click",function(d,i){
+				var checkRes;
+					if(i==pivot){
+							alert("You will have to select another pivot after this step");
+							rect1.attr("fill","grey");
+
+					}
+				d3.select(this).attr("fill","green")
+					tempdata = d;
+					
+					rect1.on("click",function(d,i){
+					
+				
+					if(flag==1){
+						
+						if(i==pivot){
+							alert("You will have to select another pivot after this step");
+							rect1.attr("fill","grey");
+					}
+					tempdata1=d;
+						//console.log(tempdata,tempdata1);
+						d3.select(this).attr("fill","green");
+						if(d==demodata[pivot]){
+							rect1.attr("fill","grey");
+							d3.select(this).attr("fill","orange");
+							
+						}
+						swap(tempdata, tempdata1);
+						flag=0;
+						swapcount++;
+						//console.log(swapcount);
+						
+					}
+					else if(flag==0){
+						
+					if(i==pivot){
+							alert("You will have to select another pivot after this step");
+							rect1.attr("fill","grey");
+					}
+						d3.select(this).attr("fill","green")
+						tempdata = d;
+						rect1.on("click",function(d){
+						if(i==pivot){
+							alert("You will have to select another pivot after this step");
+							rect1.attr("fill","grey");
+					}
+						if(flag==0){tempdata1=d;
+						swap(tempdata, tempdata1);
+						swapcount++;
+						flag=2;
+						//console.log(tempdata,tempdata1);
+						d3.select(this).attr("fill","green");
+						if(d==demodata[pivot]){
+							rect1.attr("fill","grey");
+							//d3.select(this).attr("fill","orange");	
+								
+							}
+							if(count>10){
+								alert("You have exceeded the limit of number of steps")
+							}
+						tutorial();	
+						}
+					})
+					
+					
+					}
+					
+						
+					})					
+					
+				})
+				
+				}	
+			
+			function swap(a,b){
+				for(var i=0;i<demodata.length;i++){
+					if(demodata[i]== a){
+						demodata[i]=b;
+					}
+					else if(demodata[i]==b){
+						demodata[i]=a;
+					}
+					
+					console.log(count);
+					rect1
+						.data(demodata)
+						.transition().duration(2000)
+						.attr("x",function(d,i){
+							return i*(width/demodata.length);
+							})
+						.attr("y",function(d){
+								return (height-d*4);
+							})
+						.attr("width",width/demodata.length-2)
+							.attr("height",function(d)
+							{return d*4;
+							});
+						
+						svg.selectAll("text")
+						.data(demodata)
+						.text(function(d){ 
+							return d;
+						})
+						.transition().duration(2000)
+						.attr("x", function(d, i){
+						return i * (width / demodata.length)+(width/demodata.length - 2)/2;
+						})
+						.attr("y", function(d) {
+						return height - d*4+15;
+						})
+						.attr("fill","white")
+						.attr("text-anchor","middle");	
+							
+				}
+						count++;
+			}
+				function CheckResult(){
+					if(count>=10){
+						alert("You took "+count+" steps. You could have performed better. Try once again");
+					}
+					else if (pivot==5 || pivot==6 && count<10){
+						alert("Good job! You took "+count+" steps");
+					}	
+				}
+
+				function ShowHint(){
+					document.getElementById("Hint1").innerHTML= "To get the best results, select the element in the middle position as the pivot. At the most, you should need 10 swaps for sorting the array, if done this way";
+				}
+		var resArray=[0,0,0,0,0,0,0,0,0,0];
+				function newPivot(){
+					
+					rect1.attr('fill',function(d,i){
+							
+						//if(demodata[i]!=resArray[i]){	
+							if(demodata[i]<element) 
+								return "red";
+							else if(demodata[i]>element)
+								return "blue";
+							if(demodata[i]==element){
+								resArray[i]=demodata[i];
+							}	
+								
+							//}
+							
+					});
+					document.getElementById("Hint1").innerHTML="If you performed this step correctly, all the elements less than the pivot will be towards the left in red color, and the elements more than the pivot will be towards its right in blue color";
+					resArray.toString();
+					document.getElementById("demo").innerHTML ="Sorted array set till now: "+resArray;
+					rect1.on('click',function(d,i){
+						
+					d3.select(this).attr('fill','orange');
+					
+							
+						pivot=i;
+						element=d;
+						tutorial();
+					})
+					}
+			function CheckResult(){
+					if(count>=10){
+						alert("You took "+count+" steps. You could have performed better. Try once again");
+					}
+					else if (pivot==5 || pivot==6 && count<10){
+						alert("Good job! You took "+count+" steps");
+					}	
+				}
+		
+		
+	</script>
+	
+            
+	<br><br>
+	<center><button onclick="newPivot()" value="newpivot">Select another pivot</button></center>
+		<center><button onclick="CheckResult()" value="Sorted">Check results!</button></center>
+	<center><div id="Step" style="display:inline; align:center; color: green;"></div>
+		<center><div id="demo" style="display:inline; align:center; color: green;"></div>
+	<center><button onclick="ShowHint()" value="Hint">Hint</button></center>
+		
+	<br><br>
+	<div id="Hint1" style="display:inline; align:center; color: green;"></div> 
+	
+	<br><br>
+</body>
+</html>

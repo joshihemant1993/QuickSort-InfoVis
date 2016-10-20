@@ -1,0 +1,437 @@
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
+      <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+</head>
+<style>
+	body {
+		background-color: #bdb76b;
+		width: 50%;
+		margin: auto;
+		font-family: sans-serif;
+	}
+	
+	h2 {
+		color: green;
+	}
+	svg {
+		margin: auto;
+	}
+	font {
+		font-size: 14px;
+	}
+</style>	
+
+<body>
+	<br>
+	<h2><center>Quick Sort explained</center></h2>
+	<p>Quicksort is an efficient sorting algorithm used in computer science used for placing elements in appropriate order in an array. It is also called the partition sort, and is based on the divide and conquer principle. Quicksort performs well in most of the cases, where it's complexity is O(nlogn). In the worst case, the complexity is O(n<sup>2</sup>).</p>
+	<p>It is important to understand how the algorithm can be used to provide an efficient method for sorting arrays. Quick sort first selects a value, called the pivot value (which is normally the first element of the array) and the array is sorted around this value.</p>
+	<p>Algorithm used in quicksort</p>
+	
+	<ol>
+		<li>Select a pivot element</li>
+		<li>Partition the array into three parts
+			<ul><li>First part: All elements less than pivot</li>
+				<li>Second part: The pivot element itself</li>
+				<li>Third part: All elements greater than or equal to pivot</li>
+		</ul>
+		</li>
+		<li>For ascending order, arrange the array such that all the elements before the pivot are smaller than the pivot</li>
+		<li>For ascending order, arrange the array such that all the elements after the pivot are larger than the pivot</li>
+		<li>Repeat steps 1, 2, 3 and 4 until the array is sorted</li>
+		
+		
+	</ol>
+	<p><center>Click on a random element in the array below to set it as the pivot. The elements will be arranged according to the steps above</center></p>
+		<div id="demo1"></div>
+		
+	<script>
+		var margin = {top:20,left:30,bottom:20, right:20}
+		var width=400;
+		var height=250;
+		var demodata= [30,24,10,22,6,31,17,15,19,52];
+		
+		var pivot;
+		var svg1=d3.select("#demo1").append("svg")
+				.attr("id","SVG1")
+				.attr("width",width)
+				.attr("height",height)
+				.attr("display","block");
+		
+		var rect = svg1.selectAll("rect")
+				.data(demodata)
+				.enter()
+				.append("rect")
+				.attr("x",function(d,i){
+					return i*(width/demodata.length);
+				})
+				.attr("y",function(d){
+					return (height-d*4);
+				})
+				.attr("width",width/demodata.length-2)
+				
+				.attr("fill",function(d){
+				return "rgb(40,50,80)"
+				})
+				.attr("opacity",0.8)
+				.attr("height",function(d)
+				{return d*4;
+				});
+				
+			svg1.selectAll("text")
+				.data(demodata)
+				.enter()
+				.append("text")
+				.text(function(d){ 
+					return d;
+				})
+				.attr("x", function(d, i){
+				return i * (width / demodata.length)+(width/demodata.length - 2)/2;
+				})
+				.attr("y", function(d) {
+				return height - d*4+15;
+				})
+				.attr("fill","white")
+				.attr("text-anchor","middle");
+				
+			rect.on('click',function(d,i){
+					d3.select(this).attr('fill','orange');
+					pivot=i;		
+					
+					partition(demodata,pivot);
+				//	quick(demodata,0,demodata.length-1);		
+			});	
+			
+			function partition(array,pivot){
+					var lb=0;
+					var ub=array.length-1;
+					var p=array[pivot];
+					while(lb<ub){
+						while(array[lb]<=array[pivot] && lb<ub)
+							lb++;
+						while(array[ub]>array[pivot]){
+							ub--;
+						}
+						if(lb<ub){
+							temp=array[lb];
+							array[lb]=array[ub];
+							array[ub]=temp;
+						}	
+						}
+						
+						var x=array[pivot];
+						array[pivot]=array[ub];
+						array[ub]=x;
+						console.log(array);
+						console.log(pivot);
+						
+						rect
+						.data(array)
+						.transition().duration(2000)
+						.attr("x",function(d,i){
+							return i*(width/demodata.length);
+							})
+						.attr("y",function(d){
+								return (height-d*4);
+							})
+						.attr("width",width/demodata.length-2)
+							
+						.attr("fill",function(d,i){
+							//var x=array[pivot];
+							
+							if(array[i]==p)	
+								return "orange";
+							else if(array[i]<p) 
+								return "red";
+							else if(array[i]>p)
+								return "blue";
+							
+							})
+
+						.attr("height",function(d)
+							{return d*4;
+							});
+						
+						svg1.selectAll("text")
+						.data(demodata)
+						.text(function(d){ 
+							return d;
+						})
+						.transition().duration(2000)
+						.attr("x", function(d, i){
+						return i * (width / demodata.length)+(width/demodata.length - 2)/2;
+						})
+						.attr("y", function(d) {
+						return height - d*4+15;
+						})
+						.attr("fill","white")
+						.attr("text-anchor","middle");	
+					/*	
+						for(var i=0;i<pivot;i++)
+						{	data1[i]=demodata[i]; }
+						for(var i=pivot+1;i<demodata.length-1;i++)
+						{	data2[data2.length-i]=demodata[i];}
+						console.log(data1);
+						console.log(data2);	
+					*/	
+			}
+							
+							
+						
+	</script>
+	
+	
+	<p>Here we see that the elements to the left of the pivot are smaller than the pivot. Elements to the right of the pivot are larger than the pivot.</p>
+	<p>Keep selecting a pivot element unless the elements are sorted in an ascending order</p>
+	
+	<p>This is how the process works:</p>
+	<div id="demo2"></div>
+	<script>
+	var svg2=d3.select("#demo2").append("svg")
+				.attr("id","SVG2")
+				.attr("width",width)
+				.attr("height",height)
+				.attr("display","block");
+		
+		var rect1 = svg2.selectAll("rect")
+				.data(demodata)
+				.enter()
+				.append("rect")
+				.attr("x",function(d,i){
+					return i*(width/demodata.length);
+				})
+				.attr("y",function(d){
+					return (height-d*4);
+				})
+				.attr("width",width/demodata.length-2)
+				
+				.attr("fill",function(d){
+				return "rgb(40,50,80)"
+				})
+				.attr("opacity",0.8)
+				.attr("height",function(d)
+				{return d*4;
+					console.log(demodata);
+				});
+				
+			svg2.selectAll("text")
+				.data(demodata)
+				.enter()
+				.append("text")
+				.text(function(d){ 
+					return d;
+				})
+				.attr("x", function(d, i){
+				return i * (width / demodata.length)+(width/demodata.length - 2)/2;
+				})
+				.attr("y", function(d) {
+				return height - d*4+15;
+				})
+				.attr("fill","white")
+				.attr("text-anchor","middle");	
+				
+	
+		
+				 $(function() {
+					$( "#slider-1" ).slider({
+						min:0,
+						max:10,
+						animate:"slow",
+						orientation: "horizontal",
+						slide: function(event, ui){
+							tip1(ui.value);	
+							}
+						,
+						change: function(event,ui){
+							$("#Step").val($("#slider-1").slider("value"));
+						}	
+					});
+				})	
+				
+				function tip1(step){
+					if(step==1){
+					document.getElementById("desc").innerHTML="Select a pivot element. For simplicity, let's consider the first element to be the pivot";
+							rect1.attr("fill", function(d,i){
+								if(i==0)
+									return "orange";
+									
+							})	
+					}
+					else if(step==2){
+						document.getElementById("desc").innerHTML="<br>Select two indexes, low and high as <br> Low = First index of the unsorted array <br> High = Last index of the unsorted array.";
+							rect1.attr("fill", function(d,i){
+								if(d==24 || d== 52){
+									return "green";
+								}
+								if(d==20){
+									return "orange";
+								}})
+							}	
+					else if(step==3){
+						document.getElementById("desc").innerHTML="If element[low] is less than pivot, increment low index by 1. Repeat until element[low] is greater than pivot";
+						rect1.attr("fill", function(d,i){
+								if(d==10 || d== 52){
+									return "green";
+								}
+								if(d==20){
+									return "orange";
+								}})
+							}
+					else if(step==4){
+							document.getElementById("desc").innerHTML="Continue until an element higher than pivot is found";
+						rect1.attr("fill", function(d,i){
+								if(d==31 || d== 52){
+									return "green";
+								}
+								if(d==20){
+									return "orange";
+								}})
+					}
+					else if(step==5){
+							document.getElementById("desc").innerHTML="Repeat a similar procedure for high. If element[high]>pivot, decrement high. Stop when element[high]<pivot.";
+								rect1.attr("fill", function(d,i){
+								if(d==31 || d== 19){
+									return "green";
+								}
+								if(d==20){
+									return "orange";
+								}})
+					}
+					else if(step==6){
+							document.getElementById("desc").innerHTML="Swap element[low] with element[high]";
+							var d3=[30,24,10,22,6,19,17,15,31,52];
+							rect1.data(d3)
+								.transition().duration(2000)
+								.attr("x",function(d,i){
+								return i*(width/demodata.length);
+								})
+								.attr("y",function(d){
+								return (height-d*4);
+								})
+								.attr("width",width/demodata.length-2)
+								
+							//var x=array[pivot];
+							
+							
+
+						.attr("height",function(d)
+							{return d*4;
+							});
+						
+						svg2.selectAll("text")
+						.data(d3)
+						.text(function(d){ 
+							return d;
+						})
+						.transition().duration(2000)
+						.attr("x", function(d, i){
+						return i * (width / demodata.length)+(width/demodata.length - 2)/2;
+						})
+						.attr("y", function(d) {
+						return height - d*4+15;
+						})
+						.attr("fill","white")
+						.attr("text-anchor","middle");
+					}
+					
+							
+						/*	rect1.attr("fill", function(d,i){
+								if(d==20){
+									return "orange";
+								}
+								else if(d<20){
+									return "red";
+								}
+								else	
+									return "blue";
+								})
+						*/		
+					
+					else if(step==7){
+							document.getElementById("desc").innerHTML="Keep incrementing low and decrementing high until low<high.";
+							rect1.attr("fill", function(d,i){
+								if(d==31||d==15){
+									return "green";
+								}
+								if(d==30){
+									return "orange";
+								}})	
+					}
+					else if(step==8){
+							document.getElementById("desc").innerHTML="<br>If low>high, swap element[high] with pivot. Here, 15 is swapped with 30";
+							var d4=[15,24,10,22,6,19,17,30,31,52];
+							rect1.data(d4)
+								.transition().duration(2000)
+								.attr("x",function(d,i){
+								return i*(width/demodata.length);
+								})
+								.attr("y",function(d){
+								return (height-d*4);
+								})
+								.attr("width",width/demodata.length-2)
+								
+							//var x=array[pivot];
+						.attr("height",function(d)
+							{return d*4;
+							})
+						.attr("fill", function(d,i){
+								if(d==31||d==15){
+									return "green";
+								}
+								if(d==30){
+									return "orange";
+								}
+								});	
+						
+						svg2.selectAll("text")
+						.data(d4)
+						.text(function(d){ 
+							return d;
+						})
+						.transition().duration(2000)
+						.attr("x", function(d, i){
+						return i * (width / demodata.length)+(width/demodata.length - 2)/2;
+						})
+						.attr("y", function(d) {
+						return height - d*4+15;
+						})
+						.attr("fill","white")
+						.attr("text-anchor","middle");
+					}
+					else if(step==9){
+							document.getElementById("desc").innerHTML="<br>The pivot element is placed in its position.";
+					}
+					else if(step==10){
+							document.getElementById("desc").innerHTML="<br>Now swap the left sub array and the right sub array in a similar manner";
+							rect1
+							.transition()
+							.duration(2000)
+							.attr("fill", function(d,i){
+								if(d==30){
+									return "orange";
+								}
+								else if(d<30){
+									return "red";
+								}
+								else	
+									return "blue";
+								})
+							;	
+					}
+						
+			}	
+	</script>			
+
+	<p>
+			<label for="Step">Step number:</label>
+			<input type="text" id="Step" style="background-color:#bdb76b;border:none;"></p>
+				  <div id="slider-1"></div>
+				  <div id="desc"></div>
+	<p><center><a href="Quick4.html">Understood? Try solving this!</center><br><br></a></p>
+	
+	
+</body>
+</html>
